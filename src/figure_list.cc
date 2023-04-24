@@ -5,18 +5,22 @@
 using namespace figure;
 using namespace std;
 
-FigureList::FigureList() :_size(0) {
+FigureList::FigureList() :_figures(nullptr), _size(0) {};
 
-}
-
-FigureList::FigureList(Figure figures[], int size) {
-	_size = size;
-	for (int i = 0; i < size; ++i) {
+FigureList::FigureList(FigurePtr* figures, int size): _size(size), _figures(new FigurePtr[_size]) {
+	for (int i = 0; i < _size; ++i) 
 		_figures[i] = figures[i];
-	}
+}
+FigureList::FigureList(FigureList& figures):_size(figures._size),_figures(new FigurePtr[figures._size]) {
+	for (int i=0;i<_size;++i)
+		_figures[i]=
 }
 
-Figure FigureList::get_figure_by_index(int i)const {
+FigureList::~FigureList() {
+	clear();
+}
+
+FigurePtr FigureList::get_figure_by_index(int i)const {
 	if (i < 0 || i>_size) {
 		throw std::runtime_error("Index out of range.");
 	}
@@ -29,7 +33,7 @@ Figure FigureList::operator[](int ind) const {
 	if (ind < 0 || ind >= _size) {
 		throw std::runtime_error("Index out of range.");
 	}
-	return _figures[ind];
+	return *_figures[ind];
 }
 
 Figure& FigureList::operator[](int ind) {
@@ -41,9 +45,6 @@ Figure& FigureList::operator[](int ind) {
 
 void FigureList::add_item(int ind, Figure fig) {
 	++_size;
-	if (_size == CAPACITY) {
-		throw std::runtime_error("Full capacity reached.");
-	}
 	if (ind < 0 || ind >= _size) {
 		throw std::runtime_error("Index out of range.");
 	}
@@ -54,7 +55,13 @@ void FigureList::add_item(int ind, Figure fig) {
 	_figures[ind] = fig;
 }
 
-void FigureList::clear() { _size = 0; }
+void FigureList::clear() {
+	if (_figures == nullptr)
+		return;
+	_size = 0;
+	delete[] _figures;
+	_figures = nullptr;
+}
 
 void FigureList::del_item(int ind) {
 	if (_size <= 0) {
