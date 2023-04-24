@@ -7,11 +7,10 @@ using namespace figure;
 using namespace std;
 
 
-Point::Point() :_x(0), _y(0), _z(0) {};
-
-Point::Point(float x_ref, float y_ref, float z_ref) : _x(x_ref), _y(y_ref), _z(z_ref) {};
+Point::Point(float x, float y, float z) : _x(x), _y(y), _z(z) {}
 
 Point::Point(const Point& point): _x(point._x), _y(point._y), _z(point._z){}
+
 void Point::swap(Point& another) {
 	std::swap(_x, another._x);
 	std::swap(_y, another._y);
@@ -27,15 +26,16 @@ float Point::get_x()const { return _x; }
 float Point::get_y()const { return _y; }
 float Point::get_z()const { return _z; }
 
-void Point::set_x(float x) { _x = x; }
-void Point::set_y(float y) { _y = y; }
-void Point::set_z(float z) { _z = z; }
+PointPtr Point::clone()const {
+	return new Point(_x, _y, _z);
+}
 
 
 
-Figure::Figure(const FigureTypes type, PointPtr& p1, PointPtr& p2): _type(type), _p1(p1), _p2(p2) {}
 
-Figure::Figure(const Figure& fig): _type(fig._type), _p1(fig._p1), _p2(fig._p2) {}
+Figure::Figure(const FigureTypes type, PointPtr& p1,PointPtr& p2): _type(type), _p1(p1), _p2(p2) {}
+
+Figure::Figure(const Figure& fig) : _type(fig._type), _p1(fig._p1->clone()), _p2(fig._p2->clone()) {}
 
 void Figure::swap(Figure& another) {
 	std::swap(_type, another._type);
@@ -58,14 +58,11 @@ FigureTypes Figure::get_figure_type()const { return _type; }
 PointPtr Figure::get_p1()const { return _p1; };
 PointPtr Figure::get_p2()const { return _p2; };
 
+FigurePtr Figure::clone() {
+	return new Figure(_type, _p1,_p2);
+}
 
-void Figure::set_p1(PointPtr p1){
-	_p1 = p1;
-}
-void Figure::set_p2(PointPtr p2) {
-	_p2 = p2;
-}
-void Figure::set_figure_type(FigureTypes type) { _type = type; }
+
 
 
 float Figure::figure_surface_area()const {
