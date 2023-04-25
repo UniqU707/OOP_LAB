@@ -20,17 +20,18 @@ FetchContent_MakeAvailable(googletest)
 
 
 add_library(figure SHARED 
-    "include/figure/figure.h" 
+    "include/figure/figure.h"
+    "include/figure/figure_console.h"
     "src/figure.cc"
-    "src/figure_list.cc")
+    "src/figure_list.cc"
+    "src/figure_console.cc")
 target_include_directories(figure PUBLIC "include")
 
 
-add_executable(figure-tests  
-    
+add_executable(figure_tests  
     "tests/figure_tests.cc"
-    "tests/figure_list_tests.cc"
-    
-    
-)
-target_link_libraries(figure-tests figure GTest::gtest_main)
+    "tests/figure_list_tests.cc")
+target_link_libraries(figure_tests figure GTest::gtest_main)
+
+add_executable(console "src/console.cc")
+target_link_libraries(console figure)

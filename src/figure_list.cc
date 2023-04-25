@@ -8,9 +8,9 @@ using namespace std;
 
 FigureList::FigureList() :_figures(nullptr), _size(0) {};
 
-FigureList::FigureList(FigureList& figures):_size(figures._size),_figures(new FigurePtr[figures._size]) {
+FigureList::FigureList(const FigureList& another):_size(another._size),_figures(new FigurePtr[another._size]) {
 	for (int i = 0; i < _size; ++i)
-		_figures[i] = new Figure(*figures._figures[i]);
+		_figures[i] = new Figure(*another._figures[i]);
 }
 
 void FigureList::swap(FigureList& another) {
@@ -26,31 +26,31 @@ FigureList::~FigureList() {
 	clear();
 }
 
-FigurePtr FigureList::get_figure_by_index(int i)const {
+const Figure& FigureList::get_figure_by_index(int i)const {
 	if (i < 0 || i>_size) 
 		throw std::runtime_error("Index out of range.");
 
-	return _figures[i];
+	return *_figures[i];
 }
 
 int FigureList::get_size()const { return _size; }
 
 
-FigurePtr FigureList::operator[](int ind) const {
+const Figure& FigureList::operator[](int ind) const {
 	if (ind < 0 || ind >= _size)
 		throw std::runtime_error("Index out of range.");
 
-	return _figures[ind];
+	return *_figures[ind];
 }
 
-FigurePtr& FigureList::operator[](int ind) {
+Figure& FigureList::operator[](int ind) {
 	if (ind < 0 || ind >= _size) 
 		throw std::runtime_error("Index out of range.");
 
-	return _figures[ind];
+	return *_figures[ind];
 }
 
-void FigureList::add(Figure& fig) {
+void FigureList::add(const Figure& fig) {
 	auto figures = new FigurePtr[_size + 1];
 
 	for (int i = 0; i < _size; ++i)
@@ -112,4 +112,11 @@ int FigureList::figure_max_volume()const {
 		}
 	}
 	return ind;
+}
+
+std::ostream& figure::operator<<(std::ostream& stream, const FigureList& list) {
+	stream << list.get_size() << " figure: " << endl;
+	for (int i = 0; i < list.get_size(); ++i)
+		cout << "  " << i + 1 << ") " << list[i];
+	return stream;
 }

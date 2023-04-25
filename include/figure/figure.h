@@ -1,6 +1,5 @@
 #pragma once
-#include <utility>
-#define PointPtr Point*
+#include<iostream>
 #define FigurePtr Figure*
 
 namespace figure {
@@ -18,16 +17,16 @@ namespace figure {
 	class Point{
 		float _x, _y, _z;
 	public:
+		Point();
 		Point(float x, float y, float z);
-		Point(const Point& point);
-		void swap(Point& another);
-		Point& operator=(Point& another);
-
+		
 		float get_x()const;
 		float get_y()const;
 		float get_z()const;
 
-		PointPtr clone()const;
+		void set_x(float x);
+		void set_y(float y);
+		void set_z(float z);
 	};
 
 
@@ -36,25 +35,25 @@ namespace figure {
 
 	private:
 		FigureTypes _type;
-		PointPtr _p1;
-		PointPtr _p2;
+		Point _p1;
+		Point _p2;
 
 	public:
-		Figure(const FigureTypes type, PointPtr& p1, PointPtr& p2);
+		Figure();
+		Figure(const FigureTypes type, Point p1, Point p2); 
 		Figure(const Figure& fig);
-		void swap(Figure& another);
-		Figure& operator=(Figure& another);
-		~Figure();
-
+		
 		FigureTypes get_figure_type()const;
-		PointPtr get_p1()const;
-		PointPtr get_p2()const;
+		std::string get_type() const;
+		Point get_p1()const;
+		Point get_p2()const;
 
 		float figure_surface_area()const;
 		float figure_volume()const;
 
 	};
 
+	std::ostream& operator<<(std::ostream& stream, const Figure& fig);
 
 
 	class FigureList {
@@ -62,22 +61,24 @@ namespace figure {
 		int _size;
 	public:
 		FigureList();
-		FigureList(FigureList& figures);
+		FigureList(const FigureList& another);
 		void swap(FigureList& another);
 		FigureList& operator=(FigureList& another);
 		~FigureList();
 
-		FigurePtr get_figure_by_index(int i)const;
+		const Figure& get_figure_by_index(int i)const;
 		int get_size()const;
 
-		FigurePtr operator[](int ind)const;
-		FigurePtr& operator[](int ind);
+		const Figure& operator[](int ind)const;
+		Figure& operator[](int ind);
 		
-		void add(Figure& fig);
+		void add(const Figure& fig);
 		void insert(int ind, Figure fig);
 		void remove(int ind);
 		void clear();
 
 		int figure_max_volume()const;
 	};
+
+	std::ostream& operator<<(std::ostream& stream, const FigureList& fig);
 }
