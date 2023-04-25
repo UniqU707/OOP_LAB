@@ -58,20 +58,14 @@ FigureTypes Figure::get_figure_type()const { return _type; }
 PointPtr Figure::get_p1()const { return _p1; };
 PointPtr Figure::get_p2()const { return _p2; };
 
-FigurePtr Figure::clone() {
-	return new Figure(_type, _p1,_p2);
-}
-
-
 
 
 float Figure::figure_surface_area()const {
+	float length = (fabs((*_p1).get_x() - (*_p2).get_x()));
+	float width = (fabs((*_p1).get_y() - (*_p2).get_y()));
+	float height = (fabs((*_p1).get_z() - (*_p2).get_z()));
 	switch (_type)
 	{
-		float length = (fabs((*_p1).get_x() - (*_p2).get_x()));
-		float width = (fabs((*_p1).get_y() - (*_p2).get_y()));
-		float height = (fabs((*_p1).get_z() - (*_p2).get_z()));
-
 	case BALL:
 		float rad;
 		rad = (sqrt((length * length) + (width * width) + (height * height)));
@@ -89,13 +83,12 @@ float Figure::figure_surface_area()const {
 }
 
 float Figure::figure_volume()const {
+	float length = (fabs((*_p1).get_x() - (*_p2).get_x()));
+	float width = (fabs((*_p1).get_y() - (*_p2).get_y()));
+	float height = (fabs((*_p1).get_z() - (*_p2).get_z()));
 
 	switch (_type)
 	{
-		float length = (fabs((*_p1).get_x() - (*_p2).get_x()));
-		float width = (fabs((*_p1).get_y() - (*_p2).get_y()));
-		float height = (fabs((*_p1).get_z() - (*_p2).get_z()));
-
 	case BALL:
 		float rad;
 		rad = (sqrt((length * length) + (width * width) + (height * height)));
@@ -111,18 +104,4 @@ float Figure::figure_volume()const {
 	}
 
 	return 0;
-}
-
-
-
-bool figure::operator==(const Figure& fig, const Figure& another) {
-	return
-		fig.get_figure_type() == another.get_figure_type() &&
-		(fig.get_p1() - another.get_p1() == 0) && 
-		(fig.get_p2() - another.get_p2() == 0);
-	
-}
-
-bool figure::operator!=(const Figure& fig, const Figure& another) {
-	return !(fig == another);
 }

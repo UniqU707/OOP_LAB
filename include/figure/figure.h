@@ -16,7 +16,7 @@ namespace figure {
 
 
 	class Point{
-		double _x, _y, _z;
+		float _x, _y, _z;
 	public:
 		Point(float x, float y, float z);
 		Point(const Point& point);
@@ -53,15 +53,7 @@ namespace figure {
 		float figure_surface_area()const;
 		float figure_volume()const;
 
-		FigurePtr clone();
-		
 	};
-
-
-
-	bool operator==(const Figure& fig, const Figure& another);
-
-	bool operator!=(const Figure& fig, const Figure& another);
 
 
 
@@ -70,7 +62,6 @@ namespace figure {
 		int _size;
 	public:
 		FigureList();
-		FigureList(FigurePtr* figures, int size);
 		FigureList(FigureList& figures);
 		void swap(FigureList& another);
 		FigureList& operator=(FigureList& another);
@@ -82,10 +73,11 @@ namespace figure {
 		FigurePtr operator[](int ind)const;
 		FigurePtr& operator[](int ind);
 		
-
-		void add_item(int ind, FigurePtr fig);
-		void del_item(int ind);
+		void add(Figure& fig);
+		void insert(int ind, Figure fig);
+		void remove(int ind);
 		void clear();
+
 		int figure_max_volume()const;
 	};
 }

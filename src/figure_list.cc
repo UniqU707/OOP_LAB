@@ -1,3 +1,4 @@
+#pragma warning(disable:6386)
 #include <figure/figure.h>
 #include <cmath>
 #include <stdexcept>
@@ -7,14 +8,9 @@ using namespace std;
 
 FigureList::FigureList() :_figures(nullptr), _size(0) {};
 
-FigureList::FigureList(FigurePtr* figures, int size): _size(size), _figures(new FigurePtr[_size]) {
-	for (int i = 0; i < _size; ++i) 
-		_figures[i] = figures[i];
-}
-
 FigureList::FigureList(FigureList& figures):_size(figures._size),_figures(new FigurePtr[figures._size]) {
 	for (int i = 0; i < _size; ++i)
-		_figures[i] = figures[i]->clone();
+		_figures[i] = new Figure(*figures._figures[i]);
 }
 
 void FigureList::swap(FigureList& another) {
@@ -31,9 +27,9 @@ FigureList::~FigureList() {
 }
 
 FigurePtr FigureList::get_figure_by_index(int i)const {
-	if (i < 0 || i>_size) {
+	if (i < 0 || i>_size) 
 		throw std::runtime_error("Index out of range.");
-	}
+
 	return _figures[i];
 }
 
@@ -41,40 +37,55 @@ int FigureList::get_size()const { return _size; }
 
 
 FigurePtr FigureList::operator[](int ind) const {
-	if (ind < 0 || ind >= _size) {
+	if (ind < 0 || ind >= _size)
 		throw std::runtime_error("Index out of range.");
-	}
+
 	return _figures[ind];
 }
 
 FigurePtr& FigureList::operator[](int ind) {
-	if (ind < 0 || ind >= _size) {
+	if (ind < 0 || ind >= _size) 
 		throw std::runtime_error("Index out of range.");
-	}
+
 	return _figures[ind];
 }
 
+void FigureList::add(Figure& fig) {
+	auto figures = new FigurePtr[_size + 1];
 
-void FigureList::add_item(int ind, FigurePtr fig) {
+	for (int i = 0; i < _size; ++i)
+		figures[i] = _figures[i];
+
+	figures[_size] = new Figure(fig);
+	delete _figures;
+	_figures = figures;
 	++_size;
-	if (ind < 0 || ind >= _size) {
-		throw std::runtime_error("Index out of range.");
-	}
-	for (int i = _size - 1; i >= ind; --i)
-	{
-		_figures[i] = _figures[i - 1];
-	}
-	_figures[ind] = fig;
 }
 
-void FigureList::del_item(int ind) {
-	if (_size <= 0) {
+void FigureList::insert(int ind, Figure fig) {
+	if (ind < 0 || ind >= _size)
+		throw std::runtime_error("Index out of range.");
+
+	auto figures = new FigurePtr[_size + 1];
+
+	for (int i = 0; i < _size; ++i)
+		figures[i] = _figures[i];
+
+	for (int i = _size; i > ind; --i)
+		figures[i] = figures[i - 1];
+	figures[ind] = new Figure(fig);
+
+	delete[] _figures;
+	_figures = figures;
+	++_size;
+}
+
+void FigureList::remove(int ind) {
+	if (_size <= 0) 
 		throw std::runtime_error("FigureList is empty.");
-	}
+	delete _figures[ind];
 	for (int i = ind; i < _size - 1; ++i)
-	{
 		_figures[i] = _figures[i + 1];
-	}
 	--_size;
 }
 
@@ -85,6 +96,7 @@ void FigureList::clear() {
 		delete _figures[i];
 	_size = 0;
 	delete[] _figures;
+	_figures = nullptr;
 }
 
 int FigureList::figure_max_volume()const {
